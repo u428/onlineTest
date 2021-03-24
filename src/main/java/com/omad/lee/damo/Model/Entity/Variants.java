@@ -1,7 +1,7 @@
 package com.omad.lee.damo.Model.Entity;
 
 import javax.persistence.*;
-
+import java.util.List;
 
 
 @Entity(name = "variants")
@@ -11,15 +11,21 @@ public class Variants {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private String variantid;
+
+    @Column()
     private String name;
 
+    @Column
+    private boolean answer;
+
     @ManyToOne()
-    @JoinColumn(name = "question_id", referencedColumnName = "id")
+    @JoinColumn(name = "questionid")
     private Questions questions;
 
-    @ManyToMany
-    @JoinColumn(name = "variant_id")
-    private History history;
+    @OneToMany(mappedBy = "variants",cascade = CascadeType.ALL)
+    private List<History> history;
 
     public Variants() {
     }
@@ -48,11 +54,19 @@ public class Variants {
         this.questions = questions;
     }
 
-    public History getHistory() {
+    public List<History> getHistory() {
         return history;
     }
 
-    public void setHistory(History history) {
+    public void setHistory(List<History> history) {
         this.history = history;
+    }
+
+    public boolean isAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(boolean answer) {
+        this.answer = answer;
     }
 }

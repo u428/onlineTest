@@ -10,11 +10,9 @@ import com.omad.lee.damo.Security.CurrentUser;
 import com.omad.lee.damo.Service.AuthService;
 import com.omad.lee.damo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Controller
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -46,15 +44,12 @@ public class AuthController {
 //            produces = MediaType.APPLICATION_JSON_VALUE
     )
     public boolean findEmail(@RequestParam(value = "email") String email){
-        System.out.println(email);
-        boolean returnValue = userService.findByEmail(email);
-        return returnValue;
+        return userService.findByEmail(email);
     }
 
 
     @GetMapping(path ="/getCurrentUser")
     public UserResp getCurrentUser(@CurrentUser String email){
-
         return authService.findCurrentUserByEmail(email);
 
     }

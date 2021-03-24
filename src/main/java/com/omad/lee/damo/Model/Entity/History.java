@@ -2,6 +2,7 @@ package com.omad.lee.damo.Model.Entity;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
 
 @Entity(name = "history")
 public class History {
@@ -10,20 +11,23 @@ public class History {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private UserEntity userEntity;
-
-    @ManyToMany
-    private Questions questions;
-
-    @ManyToMany
-    private Variants variants;
-
     @Column()
     private Date datebegin;
 
     @Column()
     private Date dateend;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "users_id")
+    private UserEntity userEntity;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "questions_id")
+    private Questions questions;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "variants_id")
+    private Variants variants;
 
     public History() {
     }

@@ -36,9 +36,8 @@ public class UserEntity implements Serializable {
             inverseJoinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") })
     private List<Role> roles;
 
-    @OneToMany
-    @joinColumn(name = "history_id")
-    private History history;
+    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
+    private List<History> history;
 
     public UserEntity() {
     }
@@ -115,11 +114,11 @@ public class UserEntity implements Serializable {
         this.roles = roles;
     }
 
-    public History getHistory() {
+    public List<History> getHistory() {
         return history;
     }
 
-    public void setHistory(History history) {
+    public void setHistory(List<History> history) {
         this.history = history;
     }
 }

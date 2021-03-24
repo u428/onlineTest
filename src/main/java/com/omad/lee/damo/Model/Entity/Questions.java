@@ -2,6 +2,7 @@ package com.omad.lee.damo.Model.Entity;
 
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "questions")
 public class Questions {
@@ -10,18 +11,17 @@ public class Questions {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column
-//    private String questionid;
+    @Column
+    private String questionid;
 
     @Column()
     private String question;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Variants variants;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Variants> variants;
 
-    @ManyToMany
-    @JoinColumn(name = "history_id")
-    private History history;
+    @OneToMany(mappedBy = "questions",cascade = CascadeType.ALL)
+    private List<History> history;
 
     public Questions() {
     }
@@ -42,19 +42,27 @@ public class Questions {
         this.question = question;
     }
 
-    public Variants getVariants() {
+    public List<Variants> getVariants() {
         return variants;
     }
 
-    public void setVariants(Variants variants) {
+    public void setVariants(List<Variants> variants) {
         this.variants = variants;
     }
 
-    public History getHistory() {
+    public List<History> getHistory() {
         return history;
     }
 
-    public void setHistory(History history) {
+    public void setHistory(List<History> history) {
         this.history = history;
+    }
+
+    public String getQuestionid() {
+        return questionid;
+    }
+
+    public void setQuestionid(String questionid) {
+        this.questionid = questionid;
     }
 }

@@ -22,13 +22,16 @@ import java.util.List;
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
-    protected UserRepository userRepository;
+    public UserRepository userRepository;
 
     @Autowired
-    protected RoleRepository roleRepository;
+    public RoleRepository roleRepository;
 
     @Autowired
-    BCryptPasswordEncoder encoder;
+    public BCryptPasswordEncoder encoder;
+
+    @Autowired
+    public Utils utils;
 
 
     @Override
@@ -38,16 +41,11 @@ public class AuthServiceImpl implements AuthService {
         BeanUtils.copyProperties(userDetail, userEntity);
         userEntity.setEncryptedPassword(encoder.encode(userDetail.getPassword()));
         List<Role> list =new ArrayList<>();
-        if (userDetail.getRole()==3){
-            list.add(roleRepository.findRolebyName(StatusMode.ADMIN_ROLE));
-            list.add(roleRepository.findRolebyName(StatusMode.MENEGER_ROLE));
-            list.add(roleRepository.findRolebyName(StatusMode.USER_ROLE));
-        }else if(userDetail.getRole()==2){
-            list.add(roleRepository.findRolebyName(StatusMode.MENEGER_ROLE));
-            list.add(roleRepository.findRolebyName(StatusMode.USER_ROLE));
-        }else {
-            list.add(roleRepository.findRolebyName(StatusMode.USER_ROLE));
-        }
+        Role role=new Role();
+        role.setRoleName(String.valueOf(StatusMode.USER_ROLE));
+        list.add(role);
+        userEntity.setRoles(list);
+        userEntity.setUserId(utils.generatedId(30));
         userEntity.setRoles(list);
     }
 
