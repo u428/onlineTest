@@ -1,4 +1,4 @@
-package com.omad.lee.damo.Model.Responce;
+package com.omad.lee.damo.Enams;
 
 public class OperationStatusModel {
 

@@ -1,12 +1,14 @@
 package com.omad.lee.damo.Service.ServiceImp;
 
 
-import com.omad.lee.damo.Enams.StatusMode;
+import com.omad.lee.damo.Model.Entity.Priviliges;
 import com.omad.lee.damo.Model.Entity.Role;
 import com.omad.lee.damo.Model.Entity.UserEntity;
 import com.omad.lee.damo.Model.LoginModel.UserDetailsRequestModel;
-import com.omad.lee.damo.Model.Resp.UserResp;
+import com.omad.lee.damo.Model.Req.UserReq;
+import com.omad.lee.damo.Model.Responce.ApplicationUserRole;
 import com.omad.lee.damo.Model.Responce.Utils;
+import com.omad.lee.damo.Repository.PriviligesRepository;
 import com.omad.lee.damo.Repository.RoleRepository;
 import com.omad.lee.damo.Repository.UserRepository;
 import com.omad.lee.damo.Service.AuthService;
@@ -15,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -26,6 +28,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     public RoleRepository roleRepository;
+
+    @Autowired
+    private PriviligesRepository priviligesRepository;
 
     @Autowired
     public BCryptPasswordEncoder encoder;
@@ -40,20 +45,36 @@ public class AuthServiceImpl implements AuthService {
 
         BeanUtils.copyProperties(userDetail, userEntity);
         userEntity.setEncryptedPassword(encoder.encode(userDetail.getPassword()));
-        List<Role> list =new ArrayList<>();
-        Role role=new Role();
-        role.setRoleName(String.valueOf(StatusMode.USER_ROLE));
-        list.add(role);
-        userEntity.setRoles(list);
+        Role role= new Role();
+        role.setRoleName(ApplicationUserRole.ADMIN.name());
+        Set<Priviliges> set=new HashSet<>();
+        for (String string: ApplicationUserRole.ADMIN.getGrantedAuthorities()){
+            Priviliges priviliges=new Priviliges();
+            priviliges.setName(string);
+            priviligesRepository.save(priviliges);
+            set.add(priviliges);
+
+        }
+
+        System.out.println(ApplicationUserRole.ADMINTRAINEE.getGrantedAuthorities2());
+        System.out.println(ApplicationUserRole.ADMINTRAINEE.getGrantedAuthorities());
+        role.setPriviliges(set);
+        for (Priviliges priviliges: role.getPriviliges()){
+            priviliges.setRole(role);
+        }
+        role.setPriviliges(set);
         userEntity.setUserId(utils.generatedId(30));
-        userEntity.setRoles(list);
+        roleRepository.save(role);
+        userEntity.setRole(role);
+        role.setUserEntity(userEntity);
+        userRepository.save(userEntity);
     }
 
     @Override
-    public UserResp findCurrentUserByEmail(String email) {
+    public UserReq findCurrentUserByEmail(String email) {
         UserEntity userEntity = userRepository.findUserByEmail(email);
-        UserResp userResp=new UserResp();
-        BeanUtils.copyProperties(userEntity, userResp);
-        return userResp;
+        UserReq userReq =new UserReq();
+        BeanUtils.copyProperties(userEntity, userReq);
+        return userReq;
     }
 }

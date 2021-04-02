@@ -4,30 +4,20 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
 
-@Entity(name = "history")
+@Entity
+@Table(name = "history")
 public class History {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column()
-    private Date datebegin;
-
-    @Column()
-    private Date dateend;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "users_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "users_id", referencedColumnName = "id")
     private UserEntity userEntity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "questions_id")
-    private Questions questions;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "variants_id")
-    private Variants variants;
+    @OneToMany(mappedBy = "history",cascade = CascadeType.ALL)
+    private List<Testings> testings;
 
     public History() {
     }
@@ -48,35 +38,12 @@ public class History {
         this.userEntity = userEntity;
     }
 
-    public Questions getQuestions() {
-        return questions;
+    public List<Testings> getTests() {
+        return testings;
     }
 
-    public void setQuestions(Questions questions) {
-        this.questions = questions;
+    public void setTests(List<Testings> testings) {
+        this.testings = testings;
     }
 
-    public Variants getVariants() {
-        return variants;
-    }
-
-    public void setVariants(Variants variants) {
-        this.variants = variants;
-    }
-
-    public Date getDatebegin() {
-        return datebegin;
-    }
-
-    public void setDatebegin(Date datebegin) {
-        this.datebegin = datebegin;
-    }
-
-    public Date getDateend() {
-        return dateend;
-    }
-
-    public void setDateend(Date dateend) {
-        this.dateend = dateend;
-    }
 }

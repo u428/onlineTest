@@ -1,43 +1,54 @@
 package com.omad.lee.damo.Model.Entity;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 public class UserEntity implements Serializable {
-
-//    private static final Long serialVersionUID=1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Column(nullable=false)
     private String userId;
+    @NotNull
     @Column(nullable = false, length = 50)
     private String firstName;
+    @NotNull
     @Column(nullable = false, length = 50)
     private String lastName;
+    @NotNull
     @Column(nullable = false, length = 120)
     private String email;
+    @NotNull
     @Column(nullable = false)
     private String encryptedPassword;
+    @NotNull
     @Column()
     private String emailVerificationToken;
+    @NotNull
     @Column()
     private Boolean emailVerificationStatus;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(name = "user_role",
-            joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") },
-            inverseJoinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") })
-    private List<Role> roles;
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "role_id")
+//    @JoinTable(name = "users_role",
+//            joinColumns        = { @JoinColumn(name = "users_id", referencedColumnName = "id") },
+//            inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") }
+//    )
+    private Role role;
 
-    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
-    private List<History> history;
+    @NotNull
+    @OneToOne(mappedBy = "userEntity",cascade = CascadeType.ALL)
+    private History history;
 
     public UserEntity() {
     }
@@ -106,19 +117,19 @@ public class UserEntity implements Serializable {
         this.emailVerificationStatus = emailVerificationStatus;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
-    public List<History> getHistory() {
+    public History getHistory() {
         return history;
     }
 
-    public void setHistory(List<History> history) {
+    public void setHistory(History history) {
         this.history = history;
     }
 }

@@ -4,7 +4,8 @@ import javax.persistence.*;
 import java.util.List;
 
 
-@Entity(name = "variants")
+@Entity
+@Table(name = "variants")
 public class Variants {
 
     @Id
@@ -23,9 +24,6 @@ public class Variants {
     @ManyToOne()
     @JoinColumn(name = "questionid")
     private Questions questions;
-
-    @OneToMany(mappedBy = "variants",cascade = CascadeType.ALL)
-    private List<History> history;
 
     public Variants() {
     }
@@ -54,19 +52,19 @@ public class Variants {
         this.questions = questions;
     }
 
-    public List<History> getHistory() {
-        return history;
-    }
-
-    public void setHistory(List<History> history) {
-        this.history = history;
-    }
-
     public boolean isAnswer() {
         return answer;
     }
 
     public void setAnswer(boolean answer) {
         this.answer = answer;
+    }
+
+    public String getVariantid() {
+        return variantid;
+    }
+
+    public void setVariantid(String variantid) {
+        this.variantid = variantid;
     }
 }

@@ -9,6 +9,7 @@ public class VariantsReq {
     public VariantsReq() {
     }
 
+
     public String getName() {
         return name;
     }

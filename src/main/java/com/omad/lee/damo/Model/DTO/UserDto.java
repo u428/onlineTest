@@ -9,7 +9,6 @@ public class UserDto implements Serializable {
     private String lastName;
     private String email;
     private String password;
-    private String encryptedPassword;
     private String emailVerificationToken;
     private Boolean emailVerificationStatus;
 
@@ -57,15 +56,7 @@ public class UserDto implements Serializable {
         this.password = password;
     }
 
-    public String getEncryptedPassword() {
-        return encryptedPassword;
-    }
-
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
-    }
-
-    public String getEmailVerificationToken() {
+  public String getEmailVerificationToken() {
         return emailVerificationToken;
     }
 

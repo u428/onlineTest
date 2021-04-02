@@ -1,11 +1,9 @@
 package com.omad.lee.damo.Service.ServiceImp;
 
 import com.omad.lee.damo.Model.DTO.UserDto;
-import com.omad.lee.damo.Model.Entity.Questions;
-import com.omad.lee.damo.Model.Entity.UserEntity;
-import com.omad.lee.damo.Model.Entity.Variants;
+import com.omad.lee.damo.Model.Entity.*;
 import com.omad.lee.damo.Model.Resp.QuestionResp;
-import com.omad.lee.damo.Model.Resp.UserResp;
+import com.omad.lee.damo.Model.Req.UserReq;
 import com.omad.lee.damo.Model.Resp.VariantsResp;
 import com.omad.lee.damo.Model.Responce.Utils;
 import com.omad.lee.damo.Repository.QuestionRepository;
@@ -18,13 +16,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,36 +41,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public QuestionRepository questionRepository;
 
-//    @Override
-//    public UserDto createUser(UserDto user) {
-//        if (userRepository.findUserByEmail(user.getEmail())!=null)throw new RuntimeException("Record Already Exists");
-//
-//
-//
-//        List<Game_User> list=new ArrayList<>();
-//        for (int i = 0; i < user.getAdresses().size(); i++) {
-//            Game_User addressEntity=new Game_User();
-//            BeanUtils.copyProperties(user.getAdresses().get(i), addressEntity);
-//            list.add(addressEntity);
-//        }
-//
-//
-//        UserEntity userEntity=new UserEntity();
-////        BeanUtils.copyProperties(user, userEntity);
-//        ModelMapper modelMapper=new ModelMapper(); //berdanam yaxshi ishlamadi bi ModelMapper
-//        userEntity=modelMapper.map(user, UserEntity.class);
-//        String publicUserId=utils.generatedId(30);
-//        userEntity.setUserId(publicUserId);
-//        userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//        userEntity.setEmailVerificationStatus(false); // Bini ozim false atdim bolmasa ishlamadi
-//        userEntity.setStatus(StatusMode.USER_ROLE);
-//        UserEntity storedUserDetails =userRepository.save(userEntity);
-//
-//        UserDto returnValue=modelMapper.map(storedUserDetails, UserDto.class);
-//
-//        return returnValue;
-//    }
-//
+
     @Override
     public UserDto getUser(String email) {
         UserEntity userEntity=userRepository.findUserByEmail(email);
@@ -81,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void putUserAndim(String userid, UserResp userDetailsRequestModel) {
+    public void putUserAndim(String userid, UserReq userDetailsRequestModel) {
         UserEntity userEntity = findUserbyId(userid);
         userEntity.setFirstName(userDetailsRequestModel.getFirsName());
         userEntity.setLastName(userDetailsRequestModel.getLastName());
@@ -97,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<QuestionResp> startTest() {
-        Pageable pageable= PageRequest.of(0, 12);
+        Pageable pageable= PageRequest.of(0, 3);
         Page<Questions> pages= questionRepository.findAll(pageable);
         List<QuestionResp> list1=new ArrayList<>();
         for (Questions questions: pages.getContent()){
@@ -125,19 +96,19 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        @Override
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity userEntity=userRepository.findUserByEmail(email);
         if (userEntity==null) throw new UsernameNotFoundException(email);
         return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), getAuthority(userEntity));
     }
-
-    private List<SimpleGrantedAuthority> getAuthority(UserEntity user) {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        user.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
-            System.out.println(new SimpleGrantedAuthority(role.getRoleName()));
-        });
+    private Set<SimpleGrantedAuthority> getAuthority(UserEntity user) {
+        Set<SimpleGrantedAuthority> authorities = user.getRole().getPriviliges().stream().map(priviliges ->
+                new SimpleGrantedAuthority(priviliges.getName())).collect(Collectors.toSet());
+        authorities.add(new SimpleGrantedAuthority("ROLE_"+user.getRole().getRoleName()));
+        System.out.println(user.getRole().getPriviliges());
+        System.out.println(user);
+        System.out.println("LoadUSerByUserName   =   "+authorities);
         return authorities;
     }
 

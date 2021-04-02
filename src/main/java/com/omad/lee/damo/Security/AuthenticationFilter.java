@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -40,7 +42,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 creds.getEmail(),
                 creds.getPassword(),
-                new ArrayList<>())
+                new ArrayList<SimpleGrantedAuthority>())
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -53,9 +55,20 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         String userName=((User) authResult.getPrincipal()).getUsername();
+        System.out.println(authResult.getAuthorities());
+        System.out.println(authResult.getName());
+        System.out.println(authResult.getCredentials());
+        System.out.println(authResult.getDetails());
+        System.out.println(authResult.getPrincipal());
+        System.out.println(((User) authResult.getPrincipal()).getAuthorities());
+        System.out.println(((User) authResult.getPrincipal()).getUsername());
+        System.out.println(((User) authResult.getPrincipal()).getPassword());
 
-        String token= Jwts.builder()
+
+        String token = Jwts.builder()
             .setSubject(userName)
+            .claim("authorities", authResult.getAuthorities())
+            .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis()+SecurityConstants.EXPIRATION_TIME))
             .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret())
             .compact();

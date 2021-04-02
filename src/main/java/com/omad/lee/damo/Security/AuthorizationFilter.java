@@ -1,8 +1,13 @@
 package com.omad.lee.damo.Security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -12,6 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -47,16 +56,42 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         if (token!=null){
             token=token.replace(SecurityConstants.TOKEN_PREFIX, "");
 
-            String user = Jwts.parser()
-                    .setSigningKey(SecurityConstants.getTokenSecret())
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
-            if (user!=null){
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+            try {
 
+
+                Jws<Claims> claimsJws = Jwts.parser()
+                        .setSigningKey(SecurityConstants.getTokenSecret())
+                        .parseClaimsJws(token);
+                Claims body = claimsJws.getBody();
+
+                String username = body.getSubject();
+
+                List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
+
+                Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
+                        .map(m -> new SimpleGrantedAuthority(m.get("authority")))
+                        .collect(Collectors.toSet());
+                return new UsernamePasswordAuthenticationToken(
+                        username,
+                        null,
+                        simpleGrantedAuthorities
+                );
+
+
+            }catch (JwtException e){
+                throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
             }
-            return null;
+
+//            String user = Jwts.parser()
+//                    .setSigningKey(SecurityConstants.getTokenSecret())
+//                    .parseClaimsJws(token)
+//                    .getBody()
+//                    .getSubject();
+//            if (user!=null){
+//                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+//
+//            }
+//            return null;
         }
         return null;
     }

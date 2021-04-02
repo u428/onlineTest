@@ -2,7 +2,7 @@ package com.omad.lee.damo.Service;
 
 import com.omad.lee.damo.Model.DTO.UserDto;
 import com.omad.lee.damo.Model.Resp.QuestionResp;
-import com.omad.lee.damo.Model.Resp.UserResp;
+import com.omad.lee.damo.Model.Req.UserReq;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +18,7 @@ public interface UserService extends UserDetailsService {
 
     UserDto getUser(String userName);
 
-    void putUserAndim(String userid, UserResp userDetailsRequestModel);
+    void putUserAndim(String userid, UserReq userDetailsRequestModel);
 
     void deleteUserAdmin(String userid);
 

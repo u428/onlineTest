@@ -4,8 +4,8 @@ package com.omad.lee.damo.Controller;
 import com.omad.lee.damo.Enams.RequestOperationName;
 import com.omad.lee.damo.Enams.RequestOperationStatus;
 import com.omad.lee.damo.Model.LoginModel.UserDetailsRequestModel;
-import com.omad.lee.damo.Model.Responce.OperationStatusModel;
-import com.omad.lee.damo.Model.Resp.UserResp;
+import com.omad.lee.damo.Enams.OperationStatusModel;
+import com.omad.lee.damo.Model.Req.UserReq;
 import com.omad.lee.damo.Security.CurrentUser;
 import com.omad.lee.damo.Service.AuthService;
 import com.omad.lee.damo.Service.UserService;
@@ -49,7 +49,7 @@ public class AuthController {
 
 
     @GetMapping(path ="/getCurrentUser")
-    public UserResp getCurrentUser(@CurrentUser String email){
+    public UserReq getCurrentUser(@CurrentUser String email){
         return authService.findCurrentUserByEmail(email);
 
     }

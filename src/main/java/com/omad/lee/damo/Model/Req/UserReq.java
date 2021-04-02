@@ -1,12 +1,12 @@
-package com.omad.lee.damo.Model.Resp;
+package com.omad.lee.damo.Model.Req;
 
-public class UserResp {
+public class UserReq {
 
     private String firsName;
     private String lastName;
     private String password;
 
-    public UserResp() {
+    public UserReq() {
     }
 
     public String getFirsName() {

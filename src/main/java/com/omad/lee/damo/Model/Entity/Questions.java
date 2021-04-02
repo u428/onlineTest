@@ -4,7 +4,8 @@ package com.omad.lee.damo.Model.Entity;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "questions")
+@Entity
+@Table(name = "questions")
 public class Questions {
 
     @Id
@@ -20,8 +21,6 @@ public class Questions {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Variants> variants;
 
-    @OneToMany(mappedBy = "questions",cascade = CascadeType.ALL)
-    private List<History> history;
 
     public Questions() {
     }
@@ -48,14 +47,6 @@ public class Questions {
 
     public void setVariants(List<Variants> variants) {
         this.variants = variants;
-    }
-
-    public List<History> getHistory() {
-        return history;
-    }
-
-    public void setHistory(List<History> history) {
-        this.history = history;
     }
 
     public String getQuestionid() {
