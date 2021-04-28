@@ -16,6 +16,32 @@
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -44,15 +70,33 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!--		spring boot Cache-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
 
-<!--		addelniy qoshilganlari-->
+<!--		Redis for Spring Boot-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!--		Jedis Form Redis Client-->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
 
 
-<!--		<dependency>-->
-<!--			<groupId>org.hibernate</groupId>-->
-<!--			<artifactId>hibernate-core</artifactId>-->
-<!--			<version>5.2.2.Final</version>-->
-<!--		</dependency>-->
+		<!--		addelniy qoshilganlari-->
+
+
+		<!--		<dependency>-->
+		<!--			<groupId>org.hibernate</groupId>-->
+		<!--			<artifactId>hibernate-core</artifactId>-->
+		<!--			<version>5.2.2.Final</version>-->
+		<!--		</dependency>-->
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -70,11 +114,7 @@
 			<version>2.3.0</version>
 		</dependency>
 
-
-
 		<!--		addelniy qoshilganlari-->
-
-
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -87,31 +127,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>

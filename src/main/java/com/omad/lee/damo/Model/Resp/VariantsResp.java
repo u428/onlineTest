@@ -4,5 +4,24 @@ public class VariantsResp {
 
     private String variantid;
 
-    private String option;
+    private String name;
+
+    public VariantsResp() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getVariantid() {
+        return variantid;
+    }
+
+    public void setVariantid(String variantid) {
+        this.variantid = variantid;
+    }
 }

@@ -1,11 +1,10 @@
 package com.omad.lee.damo.Model.Resp;
 
-import com.omad.lee.damo.Model.Entity.Variants;
 
 import java.util.Date;
 import java.util.List;
 
-public class HistoryResp {
+public class TestingResp {
 
     private Date datebegin;
 
@@ -13,11 +12,17 @@ public class HistoryResp {
 
     private int trues;
 
-    private List<QuestionResp> questionResps;
+    private List<AddTestingResp> addTestingResp;
 
-    private VariantsResp variantsResp;
+    public TestingResp() {
+    }
 
-    public HistoryResp() {
+    public List<AddTestingResp> getAddTestingResp() {
+        return addTestingResp;
+    }
+
+    public void setAddTestingResp(List<AddTestingResp> addTestingResp) {
+        this.addTestingResp = addTestingResp;
     }
 
     public int getTrues() {
@@ -28,21 +33,6 @@ public class HistoryResp {
         this.trues = trues;
     }
 
-    public List<QuestionResp> getQuestionResps() {
-        return questionResps;
-    }
-
-    public void setQuestionResps(List<QuestionResp> questionResps) {
-        this.questionResps = questionResps;
-    }
-
-    public VariantsResp getVariantsResp() {
-        return variantsResp;
-    }
-
-    public void setVariantsResp(VariantsResp variantsResp) {
-        this.variantsResp = variantsResp;
-    }
 
     public Date getDatebegin() {
         return datebegin;
@@ -59,4 +49,5 @@ public class HistoryResp {
     public void setDateend(Date dateend) {
         this.dateend = dateend;
     }
+
 }

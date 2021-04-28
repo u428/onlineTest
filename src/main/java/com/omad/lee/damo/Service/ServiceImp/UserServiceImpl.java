@@ -21,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -52,23 +51,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void putUserAndim(String userid, UserReq userDetailsRequestModel) {
+    public String putUserAndim(String userid, UserReq userDetailsRequestModel) {
         UserEntity userEntity = findUserbyId(userid);
         userEntity.setFirstName(userDetailsRequestModel.getFirsName());
         userEntity.setLastName(userDetailsRequestModel.getLastName());
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDetailsRequestModel.getPassword()));
-        userRepository.save(userEntity);
+        return userRepository.save(userEntity).getUserId();
     }
 
     @Override
-    public void deleteUserAdmin(String userid) {
+    public String deleteUserAdmin(String userid) {
         UserEntity userEntity = findUserbyId(userid);
         userRepository.delete(userEntity);
+        return userid;
     }
 
     @Override
     public List<QuestionResp> startTest() {
-        Pageable pageable= PageRequest.of(0, 3);
+        Pageable pageable= PageRequest.of(0, 30);
         Page<Questions> pages= questionRepository.findAll(pageable);
         List<QuestionResp> list1=new ArrayList<>();
         for (Questions questions: pages.getContent()){
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-        @Override
+    @Override
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity userEntity=userRepository.findUserByEmail(email);
         if (userEntity==null) throw new UsernameNotFoundException(email);
@@ -106,9 +106,6 @@ public class UserServiceImpl implements UserService {
         Set<SimpleGrantedAuthority> authorities = user.getRole().getPriviliges().stream().map(priviliges ->
                 new SimpleGrantedAuthority(priviliges.getName())).collect(Collectors.toSet());
         authorities.add(new SimpleGrantedAuthority("ROLE_"+user.getRole().getRoleName()));
-        System.out.println(user.getRole().getPriviliges());
-        System.out.println(user);
-        System.out.println("LoadUSerByUserName   =   "+authorities);
         return authorities;
     }
 

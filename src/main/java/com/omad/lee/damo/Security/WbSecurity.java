@@ -36,9 +36,6 @@ public class WbSecurity extends WebSecurityConfigurerAdapter {
                .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                .permitAll()
 
-               .antMatchers(HttpMethod.GET, "/auth/checkCardNumb")
-               .permitAll()
-
                .antMatchers(HttpMethod.GET, "/auth/checkEmailAvailability")
                .permitAll()
 

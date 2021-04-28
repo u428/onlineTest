@@ -18,9 +18,9 @@ public interface UserService extends UserDetailsService {
 
     UserDto getUser(String userName);
 
-    void putUserAndim(String userid, UserReq userDetailsRequestModel);
+    String putUserAndim(String userid, UserReq userDetailsRequestModel);
 
-    void deleteUserAdmin(String userid);
+    String deleteUserAdmin(String userid);
 
 
     List<QuestionResp> startTest();

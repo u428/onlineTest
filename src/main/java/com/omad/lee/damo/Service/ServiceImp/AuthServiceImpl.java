@@ -1,11 +1,13 @@
 package com.omad.lee.damo.Service.ServiceImp;
 
 
+import com.omad.lee.damo.Context.Exception.UserServiceException;
 import com.omad.lee.damo.Model.Entity.Priviliges;
 import com.omad.lee.damo.Model.Entity.Role;
 import com.omad.lee.damo.Model.Entity.UserEntity;
 import com.omad.lee.damo.Model.LoginModel.UserDetailsRequestModel;
 import com.omad.lee.damo.Model.Req.UserReq;
+import com.omad.lee.damo.Model.Resp.UserResp;
 import com.omad.lee.damo.Model.Responce.ApplicationUserRole;
 import com.omad.lee.damo.Model.Responce.Utils;
 import com.omad.lee.damo.Repository.PriviligesRepository;
@@ -17,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -40,9 +44,10 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public void save(UserDetailsRequestModel userDetail) {
-        UserEntity userEntity=new UserEntity();
-
+    public UserResp save(UserDetailsRequestModel userDetail) {
+        UserEntity userEntity=userRepository.findUserByEmail(userDetail.getEmail());
+        if (userEntity != null) throw new UserServiceException(userDetail.getEmail());
+        userEntity = new UserEntity();
         BeanUtils.copyProperties(userDetail, userEntity);
         userEntity.setEncryptedPassword(encoder.encode(userDetail.getPassword()));
         Role role= new Role();
@@ -68,6 +73,9 @@ public class AuthServiceImpl implements AuthService {
         userEntity.setRole(role);
         role.setUserEntity(userEntity);
         userRepository.save(userEntity);
+        UserResp userResp=new UserResp();
+        BeanUtils.copyProperties(userEntity, userResp);
+        return userResp;
     }
 
     @Override
@@ -76,5 +84,17 @@ public class AuthServiceImpl implements AuthService {
         UserReq userReq =new UserReq();
         BeanUtils.copyProperties(userEntity, userReq);
         return userReq;
+    }
+
+    @Override
+    public List<String> getRoles(String email) {
+        UserEntity userEntity=userRepository.findUserByEmail(email);
+        if (userEntity == null) throw new UserServiceException(email);
+        List<String> list=new ArrayList<>();
+        for (Priviliges priviliges: userEntity.getRole().getPriviliges()){
+            list.add(priviliges.getName());
+        }
+        list.add(userEntity.getRole().getRoleName());
+        return list;
     }
 }
